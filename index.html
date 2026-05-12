@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>// SYSTEM CHECK</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23000'/><text x='16' y='24' text-anchor='middle' font-size='22' font-weight='bold' font-family='serif' fill='%2300ff41'>D</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  body{
+    display:flex;flex-direction:column;
+    padding:24px 32px;
+    overflow:hidden;
+  }
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:11px;color:var(--fg-dim);letter-spacing:.1em;
+    padding-bottom:8px;border-bottom:1px dashed var(--faint,#063a14);
+    flex-shrink:0;
+  }
+  .topbar .l,.topbar .r{display:flex;gap:18px}
+  .topbar b{color:var(--fg);font-weight:500}
+
+  .boot{
+    flex:1;
+    padding-top:18px;
+    font-size:13px;
+    overflow:hidden;
+    color:var(--fg-dim);
+    white-space:pre;
+  }
+  .boot .ok{color:var(--fg)}
+  .boot .warn{color:var(--amber)}
+  .boot .err{color:var(--red)}
+  .boot .cursor-blink::after{
+    content:"_";color:var(--fg);
+    animation:blink 1s steps(2) infinite;
+  }
+  @keyframes blink{50%{opacity:0}}
+
+  /* the prompt overlay */
+  .prompt{
+    position:fixed;inset:0;display:none;
+    align-items:center;justify-content:center;flex-direction:column;
+    background:radial-gradient(circle at center, rgba(0,30,5,.4), rgba(0,0,0,.95));
+    z-index:5000;
+    padding:40px;
+  }
+  .prompt.on{display:flex;animation:fadeIn .4s}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+  .prompt .ascii{
+    font-size:clamp(6px,1.1vw,11px);
+    line-height:1;
+    color:var(--fg);
+    text-shadow:0 0 6px var(--fg);
+    margin-bottom:32px;
+    white-space:pre;
+    letter-spacing:0;
+  }
+  .prompt .q{
+    font-size:clamp(28px,5vw,64px);
+    font-weight:700;
+    letter-spacing:.08em;
+    color:var(--fg);
+    text-shadow:0 0 10px var(--fg),0 0 24px rgba(0,255,65,.4);
+    margin-bottom:8px;
+  }
+  .prompt .sub{
+    color:var(--fg-dim);font-size:12px;letter-spacing:.2em;
+    margin-bottom:40px;
+  }
+  .prompt .opts{display:flex;gap:24px}
+  .opt{
+    border:1px solid var(--fg);
+    padding:14px 32px;
+    font-size:18px;font-weight:500;letter-spacing:.15em;
+    background:transparent;color:var(--fg);
+    box-shadow:0 0 0 rgba(0,255,65,0),inset 0 0 0 rgba(0,255,65,0);
+    transition:background .15s,box-shadow .15s,transform .1s;
+    position:relative;
+  }
+  .opt.no{color:var(--fg);border-color:var(--fg)}
+  .opt.yes{color:var(--red);border-color:var(--red);text-shadow:0 0 6px var(--red)}
+  .opt.no:hover{
+    background:rgba(0,255,65,.12);
+    box-shadow:0 0 16px rgba(0,255,65,.5),inset 0 0 10px rgba(0,255,65,.2);
+  }
+  .opt.yes:hover{
+    background:rgba(255,0,60,.12);
+    box-shadow:0 0 16px rgba(255,0,60,.5),inset 0 0 10px rgba(255,0,60,.2);
+  }
+  .opt:active{transform:translateY(1px)}
+  .opt .k{
+    font-size:10px;color:var(--fg-dim);position:absolute;top:4px;left:8px;letter-spacing:.1em;
+  }
+  .opt.yes .k{color:var(--red);opacity:.7}
+
+  .prompt .foot{
+    margin-top:40px;color:var(--fg-faint);font-size:11px;letter-spacing:.2em;
+  }
+
+  .glitch-overlay{
+    position:fixed;inset:0;pointer-events:none;z-index:6000;
+    background:var(--red);mix-blend-mode:screen;opacity:0;
+  }
+  .glitch-overlay.flash{
+    animation:flash .6s steps(6);
+  }
+  @keyframes flash{
+    0%,100%{opacity:0}
+    20%{opacity:.4}40%{opacity:.1}60%{opacity:.5}80%{opacity:.2}
+  }
+</style>
+</head>
+<body>
+
+<div class="noise"></div>
+<div class="scanlines"></div>
+<div class="vignette"></div>
+<div class="glitch-overlay" id="glitch"></div>
+
+<div class="topbar">
+  <div class="l">
+    <span>[ <b>DARG.SYS</b> ]</span>
+    <span>v2.1.7-rc</span>
+    <span>tty/0</span>
+  </div>
+  <div class="r">
+    <span id="clock">--:--:--</span>
+    <span>MEM 4096K</span>
+    <span class="amber">● PRE-BOOT</span>
+  </div>
+</div>
+
+<pre class="boot flicker" id="boot"></pre>
+
+<div class="prompt" id="prompt">
+  <pre class="ascii" id="ascii"></pre>
+  <div class="q glow">ARE YOU A SKID?</div>
+  <div class="sub">// IDENTITY VERIFICATION REQUIRED</div>
+  <div class="opts">
+    <button class="opt yes" data-yes><span class="k">[Y]</span>YES</button>
+    <button class="opt no"  data-no><span class="k">[N]</span>NO</button>
+  </div>
+  <div class="foot">PRESS Y OR N TO CONTINUE  ·  ESC TO ABORT</div>
+</div>
+
+<script src="cursor.js"></script>
+<script>
+/* live clock */
+function pad(n){return String(n).padStart(2,'0')}
+function tickClock(){
+  const d=new Date();
+  document.getElementById('clock').textContent =
+    pad(d.getUTCHours())+':'+pad(d.getUTCMinutes())+':'+pad(d.getUTCSeconds())+' UTC';
+}
+setInterval(tickClock,1000);tickClock();
+
+/* boot sequence */
+const lines = [
+  ['','dim'],
+  ['DARG/OS  Copyright (c) 19XX-20XX  D. RGCorp', ''],
+  ['Initializing reverse-engineering subsystem...', 'dim'],
+  ['', ''],
+  ['[  ok  ] mounting /dev/sda1', 'ok'],
+  ['[  ok  ] starting kernel module: ptrace.ko', 'ok'],
+  ['[  ok  ] starting kernel module: capstone.ko', 'ok'],
+  ['[  ok  ] starting kernel module: ghidra-bridge.ko', 'ok'],
+  ['[ warn ] anti-debug hooks detected — bypassing', 'warn'],
+  ['[  ok  ] hooks neutralized', 'ok'],
+  ['[  ok  ] decrypting /etc/identity.enc', 'ok'],
+  ['[  ok  ] handle: DARG', 'ok'],
+  ['[  ok  ] role:   reverse_engineer', 'ok'],
+  ['', ''],
+  ['Scanning user fingerprint...', 'dim'],
+  ['  > UA:   ' + navigator.userAgent.slice(0, 64), 'dim'],
+  ['  > LANG: ' + (navigator.language || 'unknown'), 'dim'],
+  ['  > RES:  ' + screen.width + 'x' + screen.height, 'dim'],
+  ['  > TZ:   ' + Intl.DateTimeFormat().resolvedOptions().timeZone, 'dim'],
+  ['', ''],
+  ['[ warn ] skill-level uncertain', 'warn'],
+  ['[ ???? ] running classification heuristic ......', 'warn'],
+  ['', ''],
+  ['>> human intervention required <<', 'amber'],
+  ['', ''],
+];
+
+const asciiArt =
+"   ██████╗   █████╗   ██████╗   ██████╗ \n"+
+"   ██╔══██╗ ██╔══██╗  ██╔══██╗ ██╔════╝ \n"+
+"   ██║  ██║ ███████║  ██████╔╝ ██║  ███╗\n"+
+"   ██║  ██║ ██╔══██║  ██╔══██╗ ██║   ██║\n"+
+"   ██████╔╝ ██║  ██║  ██║  ██║ ╚██████╔╝\n"+
+"   ╚═════╝  ╚═╝  ╚═╝  ╚═╝  ╚═╝  ╚═════╝ ";
+
+const bootEl = document.getElementById('boot');
+const promptEl = document.getElementById('prompt');
+const asciiEl = document.getElementById('ascii');
+
+async function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+
+async function typeLine(text, cls){
+  const span = document.createElement('span');
+  if (cls) span.className = cls;
+  bootEl.appendChild(span);
+  // for fast chars, batch by 3
+  for (let i=0;i<text.length;i+=2){
+    span.textContent += text.slice(i, i+2);
+    await sleep(2);
+  }
+  bootEl.appendChild(document.createTextNode('\n'));
+  bootEl.scrollTop = bootEl.scrollHeight;
+}
+
+async function boot(){
+  for (const [t, cls] of lines){
+    const delay = t === '' ? 60 : (40 + Math.random()*60);
+    await typeLine(t, cls);
+    await sleep(delay);
+  }
+  // show prompt
+  asciiEl.textContent = asciiArt;
+  promptEl.classList.add('on');
+}
+
+boot();
+
+/* allow skip */
+window.addEventListener('keydown', e=>{
+  if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape'){
+    if (!promptEl.classList.contains('on')){
+      asciiEl.textContent = asciiArt;
+      promptEl.classList.add('on');
+    }
+  }
+  if (promptEl.classList.contains('on')){
+    if (e.key === 'y' || e.key === 'Y') answer(true);
+    if (e.key === 'n' || e.key === 'N') answer(false);
+  }
+});
+
+/* answer handling */
+function answer(yes){
+  const glitch = document.getElementById('glitch');
+  glitch.classList.add('flash');
+  if (yes){
+    // skid → redirect
+    setTimeout(()=>{ window.location.href='https://noskid.today/'; }, 600);
+  } else {
+    setTimeout(()=>{ window.location.href='portfolio.html'; }, 500);
+  }
+}
+document.querySelector('[data-yes]').addEventListener('click', ()=>answer(true));
+document.querySelector('[data-no]').addEventListener('click', ()=>answer(false));
+</script>
+
+</body>
+</html>

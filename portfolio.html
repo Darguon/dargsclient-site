@@ -18,15 +18,14 @@
   --line:rgba(241,236,228,.18);
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{background:var(--bg)}
+html{background:var(--bg);scroll-behavior:smooth}
 html,body{
   color:var(--fg);
   font-family:'JetBrains Mono',monospace;
   font-size:13px;
   line-height:1.5;
-  height:100vh;
   width:100vw;
-  overflow:hidden;
+  overflow-x:hidden;
   cursor:none;
   user-select:none;
   -webkit-font-smoothing:antialiased;
@@ -437,6 +436,71 @@ body.entered .np   {opacity:1;transform:none;transition-delay:.45s}
 }
 .fade-out.active{opacity:1;pointer-events:all}
 
+/* ── rip card (center of main page) ───────────────────────── */
+.rip-card{
+  position:fixed;top:23%;left:50%;
+  transform:translate(-50%,-50%);
+  z-index:50;
+  display:flex;flex-direction:column;align-items:center;
+  gap:7px;text-align:center;
+  padding:40px 56px 36px;
+  background:rgba(10,10,10,.72);
+  border:1px solid rgba(241,236,228,.18);
+  opacity:0;pointer-events:none;
+  transition:opacity 1s 1.2s;
+  cursor:none;
+  animation:ripGlow 5s ease-in-out infinite;
+}
+body.entered .rip-card{opacity:1;pointer-events:all}
+@keyframes ripGlow{
+  0%,100%{box-shadow:0 0 40px rgba(255,255,255,.04),inset 0 0 40px rgba(255,255,255,.02)}
+  50%{box-shadow:0 0 80px rgba(255,255,255,.13),inset 0 0 60px rgba(255,255,255,.05)}
+}
+.rip-label{
+  font-size:8px;letter-spacing:.55em;text-transform:uppercase;
+  color:var(--fg-dim);margin-bottom:4px;
+}
+.rip-dove-icon{
+  width:76px;margin-bottom:8px;
+  filter:
+    drop-shadow(0 0 14px rgba(255,255,255,.7))
+    drop-shadow(0 0 4px rgba(255,255,255,1));
+  animation:ripDovePulse 3.5s ease-in-out infinite;
+}
+@keyframes ripDovePulse{
+  0%,100%{transform:translateY(0) scale(1)}
+  50%{transform:translateY(-6px) scale(1.04)}
+}
+.rip-name{
+  font-family:'Instrument Serif',serif;
+  font-size:clamp(36px,5vw,68px);
+  font-style:italic;letter-spacing:-.03em;line-height:1;
+  color:var(--fg);
+}
+.rip-dog{
+  font-size:9px;letter-spacing:.42em;text-transform:uppercase;
+  color:var(--fg-dim);margin-top:2px;
+}
+.rip-enter{
+  display:inline-flex;align-items:center;gap:10px;
+  margin-top:22px;
+  font-size:9px;letter-spacing:.4em;text-transform:uppercase;
+  color:var(--fg-dim);
+  border:1px solid rgba(241,236,228,.28);
+  padding:11px 28px;
+  transition:color .2s,border-color .2s,background .2s;
+}
+.rip-enter:hover{
+  color:var(--fg);
+  border-color:var(--fg);
+  background:rgba(241,236,228,.06);
+}
+@media(max-width:600px){
+  .rip-card{top:26%;padding:28px 32px 24px}
+  .rip-name{font-size:36px}
+  .rip-dove-icon{width:56px}
+}
+
 /* toast */
 .toast{
   position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
@@ -468,7 +532,7 @@ body.entered .np   {opacity:1;transform:none;transition-delay:.45s}
       <div class="sep"></div>
       <span class="hide-mobile">EST. 20XX</span>
       <div class="sep hide-mobile"></div>
-      <span><a href="rip.html">✦ R.I.P</a></span>
+      <span><a href="taica.html">✦ R.I.P</a></span>
     </div>
   </nav>
 
@@ -569,9 +633,28 @@ body.entered .np   {opacity:1;transform:none;transition-delay:.45s}
       <button class="mute" id="muteBtn">MUTE</button>
     </div>
 
+    <!-- RIP CARD: floats in center of the viewport -->
+    <div class="rip-card">
+      <div class="rip-label">In loving memory</div>
+      <svg class="rip-dove-icon" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg" fill="white">
+        <path d="M55,54 Q34,38 10,40 Q24,54 10,68 Q34,66 55,58Z"/>
+        <ellipse cx="108" cy="58" rx="55" ry="18"/>
+        <circle cx="156" cy="40" r="15"/>
+        <path d="M168,37 L186,41 L168,46Z" fill="#c0b8a8"/>
+        <circle cx="161" cy="37" r="3" fill="#111"/>
+        <circle cx="162" cy="36" r="1.1" fill="white"/>
+        <path d="M108,52 C88,36 60,20 28,22 C54,30 82,40 108,54Z"/>
+        <path d="M108,64 C88,78 60,88 28,86 C54,78 82,68 108,62Z" opacity=".7"/>
+      </svg>
+      <div class="rip-name">Taica</div>
+      <div class="rip-dog">The Dog</div>
+      <a href="taica.html" class="rip-enter">Enter memorial →</a>
+    </div>
+
   </div>
 
 </div>
+
 
 <div class="fade-out" id="fadeOut"></div>
 <div class="enter" id="enter">
@@ -625,9 +708,9 @@ function tickClock(){
 setInterval(tickClock,1000);tickClock();
 
 /* visitor counter */
-fetch('https://api.countapi.xyz/hit/darg/portfolio')
+fetch('https://api.counterapi.dev/v1/darg/portfolio/up')
   .then(r=>r.json())
-  .then(d=>{ document.getElementById('vis').textContent = String(d.value).padStart(6,'0'); })
+  .then(d=>{ document.getElementById('vis').textContent = String(d.count).padStart(6,'0'); })
   .catch(()=>{});
 
 /* ── copy on click ──────────────────────────────────────────── */

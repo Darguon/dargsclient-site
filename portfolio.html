@@ -318,21 +318,61 @@ body.entered .works{opacity:1;transform:none;transition-delay:.25s}
 body.entered .dossier{opacity:1;transform:none;transition-delay:.35s}
 body.entered .np   {opacity:1;transform:none;transition-delay:.45s}
 
-/* responsive */
+/* ── tablet ───────────────────────────────────────────────── */
 @media (max-width:1100px){
   html,body{overflow-y:auto;height:auto}
-  .page{height:auto;min-height:100vh}
-  .main{grid-template-columns:1fr;align-content:start}
+  .page{height:auto;min-height:100vh;padding:24px 32px 40px}
+  .main{grid-template-columns:1fr;align-content:start;gap:32px 0;padding:32px 0 24px}
   .hero,.works{grid-column:1 / -1;grid-row:auto}
-  .works{margin-top:32px}
-  .dossier{flex-wrap:wrap;gap:20px}
+  .works{margin-top:0}
+  .dossier{flex-wrap:wrap;gap:24px 0}
+  .di{padding:0 40px 0 0}
   .di-sep{display:none}
-  .np{grid-template-columns:auto 1fr;gap:14px;flex-wrap:wrap}
-  .np .time,.np .vu,.np .mute{grid-column:span 2}
+  .np{grid-template-columns:auto 1fr auto auto;gap:16px}
+  .np .bar{width:100%}
+  .np .vu{display:none}
 }
-@media (max-width:560px){
-  .page{padding:16px 18px}
-  .nav .right{gap:14px;flex-wrap:wrap;justify-content:flex-end}
+
+/* ── mobile ───────────────────────────────────────────────── */
+@media (max-width:600px){
+  .page{padding:18px 20px 48px}
+  .main{gap:24px 0;padding:20px 0 16px}
+
+  /* nav: keep brand + verify only */
+  .nav{padding-bottom:12px}
+  .nav .right .sep{display:none}
+  .nav #clock{display:none}
+  .nav .hide-mobile{display:none}
+
+  /* hero */
+  .title{font-size:clamp(52px,14vw,90px)}
+  .role{font-size:clamp(15px,4vw,20px)}
+  .kicker{margin-bottom:8px}
+
+  /* works */
+  .w-item{padding:12px 0}
+  .w-name{font-size:18px}
+
+  /* dossier: 2-col grid */
+  .dossier{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding-top:16px}
+  .di{padding:0}
+  .di:last-child{margin-left:0}
+  .di-val{font-size:18px}
+
+  /* music player: compact single row + progress below */
+  .np{
+    grid-template-columns:auto 1fr auto;
+    gap:12px;
+    padding-top:16px;
+    border-top:1px solid var(--line);
+  }
+  .np .play{width:40px;height:40px}
+  .np .track .t{font-size:13px}
+  .np .track .a{display:none}
+  .np .bar{width:100%}
+  .np .time{display:none}
+  .np .vu{display:none}
+  .np .mute{font-size:9px}
 }
 
 
@@ -422,13 +462,13 @@ body.entered .np   {opacity:1;transform:none;transition-delay:.45s}
   <nav class="nav">
     <div class="brand">DARG ©</div>
     <div class="right">
-      <span><span class="dot"></span>STATUS / ONLINE</span>
-      <div class="sep"></div>
+      <span class="hide-mobile"><span class="dot"></span>STATUS / ONLINE</span>
+      <div class="sep hide-mobile"></div>
       <span id="clock">--:--:--</span>
       <div class="sep"></div>
-      <span>EST. 20XX</span>
-      <div class="sep"></div>
-      <span><a href="index.html">↩ VERIFY</a></span>
+      <span class="hide-mobile">EST. 20XX</span>
+      <div class="sep hide-mobile"></div>
+      <span><a href="rip.html">✦ R.I.P</a></span>
     </div>
   </nav>
 
@@ -676,31 +716,25 @@ function initAnalyser(){
   }catch(e){}
 }
 
-/* ── vu + audio-reactive title ──────────────────────────────── */
+/* ── vu bars + audio-reactive title (no Web Audio routing) ──── */
 const titleEl = document.querySelector('.title');
 function vuFrame(t){
-  if (analyser){
-    analyser.getByteFrequencyData(dataArr);
-    const n=vuBars.length;
-    let sum=0;
-    for (let i=0;i<n;i++){
-      const v=dataArr[i*Math.max(1,(dataArr.length/n)|0)]/255;
-      sum+=v;
-      const bar=vuBars[i];
-      bar.style.height=Math.min(100,10+v*100)+'%';
-      bar.classList.toggle('hi', v>0.4);
-      bar.classList.toggle('peak', v>0.8);
-    }
-    const level=sum/n;
-    const scale=(1+level*0.018).toFixed(4);
-    const glow=level>0.3?((level-0.3)*28).toFixed(1):0;
-    titleEl.style.transform=`scale(${scale})`;
-    titleEl.style.textShadow=glow>0?`0 0 ${glow}px rgba(241,236,228,.25)`:'';
+  const playing = !media.paused && !media.muted;
+  // vu bars
+  for (let i=0;i<vuBars.length;i++){
+    const v = playing
+      ? Math.abs(Math.sin(t/400+i*.42)*Math.cos(t/300+i*.28))*.85+Math.random()*.15
+      : (Math.sin(t/900+i*.35)+1)*0.05+Math.random()*.02;
+    vuBars[i].style.height=(playing?8+v*92:4+v*20)+'%';
+    vuBars[i].classList.toggle('hi', v>0.5);
+    vuBars[i].classList.toggle('peak', v>0.85);
+  }
+  // title pulse when playing
+  if (playing){
+    const pulse = 1 + Math.sin(t/260)*0.008 + Math.sin(t/130)*0.004;
+    titleEl.style.transform = `scale(${pulse.toFixed(5)})`;
   } else {
-    for (let i=0;i<vuBars.length;i++){
-      const v=(Math.sin(t/600+i*.35)+1)*0.13+Math.random()*.04;
-      vuBars[i].style.height=(8+v*40)+'%';
-    }
+    titleEl.style.transform = '';
   }
   requestAnimationFrame(vuFrame);
 }

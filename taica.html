@@ -156,6 +156,10 @@ body.entered .m-hero{opacity:1;transform:none}
   color:var(--fg);
   margin-bottom:32px;
 }
+.m-hero-dates{
+  font-size:10px;letter-spacing:.38em;text-transform:uppercase;
+  color:var(--fg-dim);margin-bottom:28px;margin-top:-16px;
+}
 .m-hero-dove{
   width:80px;opacity:.5;margin:0 auto 28px;
   filter:drop-shadow(0 0 14px rgba(255,255,255,.3));
@@ -225,6 +229,7 @@ body.entered .scroll-hint{opacity:1}
 .m-ph:nth-child(4){aspect-ratio:3/2}
 .m-ph:nth-child(5){aspect-ratio:3/2;margin-top:-44px}
 .m-ph:nth-child(6){aspect-ratio:3/2}
+.m-ph:nth-child(7){grid-column:1/-1;aspect-ratio:21/7}
 
 .m-ph img{
   width:100%;height:100%;object-fit:cover;display:block;
@@ -436,6 +441,7 @@ body.entered .m-music{opacity:1;transform:none}
   .m-ph:nth-child(1),.m-ph:nth-child(2),.m-ph:nth-child(3),
   .m-ph:nth-child(4),.m-ph:nth-child(5),.m-ph:nth-child(6){
     aspect-ratio:3/4;margin-top:0}
+  .m-ph:nth-child(7){grid-column:1/-1;aspect-ratio:16/9}
   .m-epitaph{padding:48px 20px 40px}
   .m-closing{padding:40px 20px}
   .m-foot{padding:24px 20px 80px;flex-direction:column;gap:10px;text-align:center}
@@ -490,6 +496,7 @@ body.entered .m-music{opacity:1;transform:none}
 <section class="m-hero">
   <div class="m-hero-kicker">In loving memory</div>
   <h1 class="m-hero-title">Taica</h1>
+  <div class="m-hero-dates">24.04.2013 — 13.05.2026</div>
   <svg class="m-hero-dove" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg" fill="white">
     <path d="M55,54 Q34,38 10,40 Q24,54 10,68 Q34,66 55,58Z"/>
     <ellipse cx="108" cy="58" rx="55" ry="18"/>
@@ -518,6 +525,7 @@ body.entered .m-music{opacity:1;transform:none}
   <div class="m-ph"><img src="images/taica4.jpg" alt="Taica"><span class="m-ph-num">04</span></div>
   <div class="m-ph"><img src="images/taica5.jpg" alt="Taica"><span class="m-ph-num">05</span></div>
   <div class="m-ph"><img src="images/taica6.jpg" alt="Taica"><span class="m-ph-num">06</span></div>
+  <div class="m-ph"><img src="images/taica7.jpg" alt="Taica"><span class="m-ph-num">07</span></div>
 </div>
 
 <!-- ── epitaph ──────────────────────────────────────────── -->

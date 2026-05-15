@@ -39,13 +39,31 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:none}
 .bg{
   position:fixed;inset:0;z-index:-2;overflow:hidden;background:#000;
 }
-::cue{
-  font-family:'JetBrains Mono',monospace;
-  font-size:13px;
-  color:rgba(241,236,228,.9);
-  background:rgba(10,10,10,.55);
-  text-shadow:none;
-  letter-spacing:.04em;
+/* ── animated lyrics ───────────────────────────────────────── */
+#lyric{
+  position:fixed;
+  bottom:160px;
+  left:0;right:0;
+  text-align:center;
+  z-index:200;
+  pointer-events:none;
+  padding:0 40px;
+}
+#lyric span{
+  display:inline-block;
+  font-family:'Instrument Serif',serif;
+  font-style:italic;
+  font-size:clamp(15px,2.2vw,26px);
+  letter-spacing:-.01em;
+  color:rgba(241,236,228,.95);
+  text-shadow:0 2px 24px rgba(0,0,0,.9),0 0 60px rgba(0,0,0,.6);
+  opacity:0;
+  transform:translateY(10px);
+  transition:opacity .35s ease, transform .35s ease;
+}
+#lyric span.show{
+  opacity:1;
+  transform:translateY(0);
 }
 .bg video{
   position:absolute;top:50%;left:50%;
@@ -459,11 +477,10 @@ body.entered .np   {opacity:1;transform:none;transition-delay:.45s}
 
 <!-- background video + audio source -->
 <div class="bg">
-  <video id="media" src="/media/bg.mp4" autoplay loop playsinline muted>
-    <track kind="subtitles" src="/media/subtitles.vtt" srclang="en" label="English" default>
-  </video>
+  <video id="media" src="/media/bg.mp4" autoplay loop playsinline muted></video>
 </div>
 <div class="grain"></div>
+<div id="lyric"><span></span></div>
 
 <div class="page">
 
@@ -796,6 +813,88 @@ enterEl.addEventListener('click', dismissEnter);
 addEventListener('keydown', e => {
   if (!enterEl.classList.contains('hidden')) { e.preventDefault(); dismissEnter(); }
 }, { once: true });
+
+/* ── animated lyrics ───────────────────────────────────────── */
+const lyricEl = document.querySelector('#lyric span');
+const lyrics = [
+  {t:10.95,text:"They want me broke again"},
+  {t:14.18,text:"But now it's my turn to eat"},
+  {t:16.57,text:"They did me wrong again"},
+  {t:20.82,text:""},
+  {t:21.02,text:"G baby, yeah, I'm G baby"},
+  {t:23.49,text:"I'm the guy everybody copies, baby"},
+  {t:26.16,text:"The guy the cops are trying to catch, baby"},
+  {t:28.78,text:"That's why I need you on my side, baby"},
+  {t:32.47,text:"You don't have to protect me, baby"},
+  {t:34.93,text:"And you can come over tomorrow"},
+  {t:37.90,text:"And tomorrow I'll do for you"},
+  {t:39.79,text:"What your exes couldn't do in a year, baby"},
+  {t:42.99,text:"I never knew all of this would go like this"},
+  {t:45.37,text:"The cops suspect us, none of this makes sense"},
+  {t:48.11,text:"Can you tell me baby why you wanna leave"},
+  {t:50.75,text:"After all this, you still matter to me"},
+  {t:53.46,text:""},
+  {t:53.90,text:"A lot of guys wish bad on me"},
+  {t:56.63,text:"But I'm only going up"},
+  {t:59.43,text:"Baby forget all the drama"},
+  {t:62.44,text:"And come party with me"},
+  {t:64.64,text:"They want me broke again"},
+  {t:67.34,text:"But now it's my turn to eat"},
+  {t:70.01,text:"They did me wrong again"},
+  {t:72.59,text:"Sorry but I can't forgive"},
+  {t:75.00,text:""},
+  {t:75.33,text:"Now I'm making money"},
+  {t:76.91,text:"I can't get involved in pointless drama anymore"},
+  {t:79.48,text:"Sometimes I used laughing gas because of sadness"},
+  {t:82.28,text:"I had to escape those times somehow"},
+  {t:84.92,text:"I was messed up in the hood"},
+  {t:87.34,text:"Luckily this music saved me"},
+  {t:90.07,text:"Yeah you were my bro, my slime, my guy — or at least that's what I thought"},
+  {t:95.78,text:"A lot of people claim they love you, even though they're really against you"},
+  {t:100.73,text:"And they talk shit behind your back — but fuck that, let's rise up and make money"},
+  {t:106.07,text:"Yeah yeah"},
+  {t:107.29,text:""},
+  {t:107.50,text:"A lot of guys wish bad on me"},
+  {t:110.50,text:"But I'm only going up"},
+  {t:112.61,text:"Baby forget all the drama"},
+  {t:115.83,text:"And come party with me"},
+  {t:117.88,text:"They want me broke again"},
+  {t:120.70,text:"But now it's my turn to eat"},
+  {t:123.15,text:"They did me wrong again"},
+  {t:125.98,text:"Sorry but I can't forgive"},
+  {t:128.43,text:""},
+  {t:128.50,text:"A lot of guys wish bad on me"},
+  {t:131.74,text:"But I'm only going up"},
+  {t:134.14,text:"Baby forget all the drama"},
+  {t:137.07,text:"And come party with me"},
+  {t:139.21,text:"They want me broke again"},
+  {t:142.06,text:"But now it's my turn to eat"},
+  {t:144.56,text:"They did me wrong again, again"},
+  {t:147.33,text:"Sorry but I can't forgive"},
+  {t:149.83,text:""},
+  {t:158.88,text:"Yeah"},
+  {t:160.80,text:""},
+];
+let curLyric = -1;
+function setLyric(text){
+  lyricEl.classList.remove('show');
+  if(!text){return}
+  setTimeout(()=>{
+    lyricEl.textContent = text;
+    lyricEl.classList.add('show');
+  }, 50);
+}
+media.addEventListener('timeupdate',()=>{
+  const t = media.currentTime;
+  let idx = -1;
+  for(let i=0;i<lyrics.length;i++){
+    if(t >= lyrics[i].t) idx = i; else break;
+  }
+  if(idx !== curLyric){
+    curLyric = idx;
+    setLyric(idx >= 0 ? lyrics[idx].text : '');
+  }
+});
 
 /* konami */
 const konami=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];

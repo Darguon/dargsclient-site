@@ -39,6 +39,14 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:none}
 .bg{
   position:fixed;inset:0;z-index:-2;overflow:hidden;background:#000;
 }
+::cue{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;
+  color:rgba(241,236,228,.9);
+  background:rgba(10,10,10,.55);
+  text-shadow:none;
+  letter-spacing:.04em;
+}
 .bg video{
   position:absolute;top:50%;left:50%;
   min-width:115%;min-height:115%;
@@ -451,7 +459,9 @@ body.entered .np   {opacity:1;transform:none;transition-delay:.45s}
 
 <!-- background video + audio source -->
 <div class="bg">
-  <video id="media" src="/media/bg.mp4" autoplay loop playsinline muted></video>
+  <video id="media" src="/media/bg.mp4" autoplay loop playsinline muted>
+    <track kind="subtitles" src="/media/subtitles.vtt" srclang="en" label="English" default>
+  </video>
 </div>
 <div class="grain"></div>
 

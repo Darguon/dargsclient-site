@@ -42,28 +42,36 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:none}
 /* ── animated lyrics ───────────────────────────────────────── */
 #lyric{
   position:fixed;
-  bottom:160px;
+  bottom:164px;
   left:0;right:0;
   text-align:center;
   z-index:200;
   pointer-events:none;
-  padding:0 40px;
+  padding:0 48px;
 }
-#lyric span{
-  display:inline-block;
+#lyric-text{
+  display:inline;
   font-family:'Instrument Serif',serif;
   font-style:italic;
-  font-size:clamp(15px,2.2vw,26px);
-  letter-spacing:-.01em;
-  color:rgba(241,236,228,.95);
-  text-shadow:0 2px 24px rgba(0,0,0,.9),0 0 60px rgba(0,0,0,.6);
-  opacity:0;
-  transform:translateY(10px);
-  transition:opacity .35s ease, transform .35s ease;
+  font-size:clamp(20px,3vw,42px);
+  letter-spacing:-.025em;
+  line-height:1;
+  transition:opacity .22s ease, filter .22s ease, transform .22s ease;
 }
-#lyric span.show{
-  opacity:1;
-  transform:translateY(0);
+#lyric.out #lyric-text{
+  opacity:0!important;
+  filter:blur(10px)!important;
+  transform:translateY(-12px)!important;
+}
+.lc{ display:inline }
+.lc.pre{ opacity:0 }
+.lc.scr{
+  color:var(--accent);
+  text-shadow:0 0 8px rgba(255,91,58,1), 0 0 22px rgba(255,91,58,.6);
+}
+.lc.done{
+  color:var(--fg);
+  text-shadow:0 0 24px rgba(241,236,228,.22);
 }
 .bg video{
   position:absolute;top:50%;left:50%;
@@ -480,7 +488,7 @@ body.entered .np   {opacity:1;transform:none;transition-delay:.45s}
   <video id="media" src="/media/bg.mp4" autoplay loop playsinline muted></video>
 </div>
 <div class="grain"></div>
-<div id="lyric"><span></span></div>
+<div id="lyric"><div id="lyric-text"></div></div>
 
 <div class="page">
 
@@ -814,8 +822,61 @@ addEventListener('keydown', e => {
   if (!enterEl.classList.contains('hidden')) { e.preventDefault(); dismissEnter(); }
 }, { once: true });
 
-/* ── animated lyrics ───────────────────────────────────────── */
-const lyricEl = document.querySelector('#lyric span');
+/* ── animated lyrics — scramble decode ─────────────────────── */
+const lyricContainer = document.getElementById('lyric');
+const lyricText = document.getElementById('lyric-text');
+const GLYPHS = '!@#$%^&*<>{}[]|\\/—+=?~`★◆▲■';
+let lyricRAF = null;
+let curLyric = -1;
+
+function scrambleIn(text){
+  if(lyricRAF){ cancelAnimationFrame(lyricRAF); lyricRAF = null; }
+  lyricContainer.classList.remove('out');
+
+  if(!text){ lyricText.innerHTML=''; return; }
+
+  const chars = [...text];
+  const len = chars.length;
+  const stagger = Math.min(36, 460 / len);
+  const dur = 190;
+
+  // render all chars as scrambled orange immediately
+  lyricText.innerHTML = chars.map((c,i)=>
+    c===' ' ? '<span class="lc"> </span>'
+             : `<span class="lc scr" data-c="${c==='<'?'&lt;':c==='>'?'&gt;':c}">${GLYPHS[Math.floor(Math.random()*GLYPHS.length)]}</span>`
+  ).join('');
+
+  const spans = lyricText.querySelectorAll('.lc[data-c]');
+  const t0 = performance.now();
+
+  function tick(now){
+    const el = now - t0;
+    let done = true;
+    spans.forEach((sp,i)=>{
+      const start = i * stagger;
+      const end   = start + dur;
+      if(el < start){
+        sp.className='lc pre'; sp.textContent=' '; done=false;
+      } else if(el >= end){
+        sp.className='lc done'; sp.textContent=sp.dataset.c;
+      } else {
+        sp.className='lc scr';
+        sp.textContent=GLYPHS[Math.floor(Math.random()*GLYPHS.length)];
+        done=false;
+      }
+    });
+    if(!done) lyricRAF = requestAnimationFrame(tick);
+    else lyricRAF = null;
+  }
+  lyricRAF = requestAnimationFrame(tick);
+}
+
+function setLyric(text){
+  if(lyricRAF){ cancelAnimationFrame(lyricRAF); lyricRAF = null; }
+  lyricContainer.classList.add('out');
+  setTimeout(()=>scrambleIn(text), text ? 230 : 0);
+}
+
 const lyrics = [
   {t:10.95,text:"They want me broke again"},
   {t:14.18,text:"But now it's my turn to eat"},
@@ -875,15 +936,6 @@ const lyrics = [
   {t:158.88,text:"Yeah"},
   {t:160.80,text:""},
 ];
-let curLyric = -1;
-function setLyric(text){
-  lyricEl.classList.remove('show');
-  if(!text){return}
-  setTimeout(()=>{
-    lyricEl.textContent = text;
-    lyricEl.classList.add('show');
-  }, 50);
-}
 media.addEventListener('timeupdate',()=>{
   const t = media.currentTime;
   let idx = -1;

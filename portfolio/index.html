@@ -95,6 +95,19 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:none}
   mix-blend-mode:overlay;
   animation:noise .3s steps(4) infinite;
 }
+/* ── cursor trail ───────────────────────────────────────────── */
+.trail{
+  position:fixed;pointer-events:none;z-index:9999;
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--accent);
+  text-shadow:0 0 6px rgba(255,91,58,.9),0 0 14px rgba(255,91,58,.5);
+  animation:trailFade .65s ease forwards;
+  user-select:none;will-change:transform,opacity;
+}
+@keyframes trailFade{
+  0%  {opacity:.95;transform:translate(var(--dx),0) scale(1)}
+  100%{opacity:0;  transform:translate(var(--dx),-20px) scale(.5)}
+}
 @keyframes noise{
   0%{transform:translate(0,0)}25%{transform:translate(-3%,2%)}
   50%{transform:translate(3%,-3%)}75%{transform:translate(-2%,3%)}
@@ -985,6 +998,25 @@ media.addEventListener('timeupdate',()=>{
     curLyric = idx;
     setLyric(idx >= 0 ? lyrics[idx].text : '');
   }
+});
+
+/* ── cursor trail ───────────────────────────────────────────── */
+const TRAIL_CHARS = '!@#$%^&<>{}[]|/?—+=~01';
+let lastTrail = 0;
+addEventListener('mousemove', e => {
+  if(!document.body.classList.contains('entered')) return;
+  const now = Date.now();
+  if(now - lastTrail < 38) return;
+  lastTrail = now;
+  const el = document.createElement('span');
+  el.className = 'trail';
+  el.textContent = TRAIL_CHARS[Math.floor(Math.random() * TRAIL_CHARS.length)];
+  el.style.left = (e.clientX - 5) + 'px';
+  el.style.top  = (e.clientY - 10) + 'px';
+  const dx = (Math.random() * 14 - 7).toFixed(1) + 'px';
+  el.style.setProperty('--dx', dx);
+  document.body.appendChild(el);
+  el.addEventListener('animationend', () => el.remove(), {once:true});
 });
 
 /* konami */

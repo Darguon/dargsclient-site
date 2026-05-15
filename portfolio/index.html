@@ -108,6 +108,24 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:none}
   0%  {opacity:.95;transform:translate(var(--dx),0) scale(1)}
   100%{opacity:0;  transform:translate(var(--dx),-20px) scale(.5)}
 }
+.trail.burst{
+  font-size:14px;
+  animation:burstFade .6s cubic-bezier(.2,.8,.3,1) forwards;
+}
+@keyframes burstFade{
+  0%  {opacity:1;  transform:translate(0,0) scale(1.2)}
+  60% {opacity:.7; transform:translate(var(--dx),var(--dy)) scale(.8)}
+  100%{opacity:0;  transform:translate(var(--bx),var(--by)) scale(.2)}
+}
+/* ── 3d tilt ─────────────────────────────────────────────────── */
+.tilt{
+  transform-style:preserve-3d;
+  transition:transform .1s ease;
+  will-change:transform;
+}
+.tilt.snap{
+  transition:transform .55s cubic-bezier(.23,1,.32,1);
+}
 @keyframes noise{
   0%{transform:translate(0,0)}25%{transform:translate(-3%,2%)}
   50%{transform:translate(3%,-3%)}75%{transform:translate(-2%,3%)}
@@ -1000,23 +1018,65 @@ media.addEventListener('timeupdate',()=>{
   }
 });
 
-/* ── cursor trail ───────────────────────────────────────────── */
+/* ── cursor trail + click burst ─────────────────────────────── */
 const TRAIL_CHARS = '!@#$%^&<>{}[]|/?—+=~01';
 let lastTrail = 0;
+
+function spawnGlyph(x, y, burst=false, angle=0, dist=0){
+  const el = document.createElement('span');
+  el.className = burst ? 'trail burst' : 'trail';
+  el.textContent = TRAIL_CHARS[Math.floor(Math.random() * TRAIL_CHARS.length)];
+  el.style.left = (x - 6) + 'px';
+  el.style.top  = (y - 10) + 'px';
+  if(burst){
+    const bx = (Math.cos(angle) * dist).toFixed(1) + 'px';
+    const by = (Math.sin(angle) * dist).toFixed(1) + 'px';
+    const bx2 = (Math.cos(angle) * dist * 1.6).toFixed(1) + 'px';
+    const by2 = (Math.sin(angle) * dist * 1.6).toFixed(1) + 'px';
+    el.style.setProperty('--dx', bx);
+    el.style.setProperty('--dy', by);
+    el.style.setProperty('--bx', bx2);
+    el.style.setProperty('--by', by2);
+  } else {
+    el.style.setProperty('--dx', (Math.random()*14-7).toFixed(1)+'px');
+  }
+  document.body.appendChild(el);
+  el.addEventListener('animationend', ()=>el.remove(), {once:true});
+}
+
 addEventListener('mousemove', e => {
   if(!document.body.classList.contains('entered')) return;
   const now = Date.now();
   if(now - lastTrail < 38) return;
   lastTrail = now;
-  const el = document.createElement('span');
-  el.className = 'trail';
-  el.textContent = TRAIL_CHARS[Math.floor(Math.random() * TRAIL_CHARS.length)];
-  el.style.left = (e.clientX - 5) + 'px';
-  el.style.top  = (e.clientY - 10) + 'px';
-  const dx = (Math.random() * 14 - 7).toFixed(1) + 'px';
-  el.style.setProperty('--dx', dx);
-  document.body.appendChild(el);
-  el.addEventListener('animationend', () => el.remove(), {once:true});
+  spawnGlyph(e.clientX, e.clientY);
+});
+
+addEventListener('click', e => {
+  if(!document.body.classList.contains('entered')) return;
+  const count = 12;
+  for(let i=0; i<count; i++){
+    const angle = (i/count) * Math.PI * 2 + Math.random() * .4;
+    const dist  = 28 + Math.random() * 36;
+    setTimeout(()=>spawnGlyph(e.clientX, e.clientY, true, angle, dist), i*18);
+  }
+});
+
+/* ── 3d tilt ─────────────────────────────────────────────────── */
+document.querySelectorAll('.w-item, .hero, .dossier').forEach(card => {
+  card.classList.add('tilt');
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width  - 0.5;
+    const y = (e.clientY - r.top)  / r.height - 0.5;
+    card.classList.remove('snap');
+    card.style.transform = `perspective(700px) rotateY(${(x*7).toFixed(2)}deg) rotateX(${(-y*5).toFixed(2)}deg) scale(1.008)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.classList.add('snap');
+    card.style.transform = '';
+    setTimeout(()=>card.classList.remove('snap'), 600);
+  });
 });
 
 /* konami */

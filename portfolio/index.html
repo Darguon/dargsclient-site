@@ -451,7 +451,7 @@ body.entered .np   {opacity:1;transform:none;transition-delay:.45s}
 
 <!-- background video + audio source -->
 <div class="bg">
-  <video id="media" src="media/bg.mp4" autoplay loop playsinline></video>
+  <video id="media" src="media/bg.mp4" autoplay loop playsinline muted></video>
 </div>
 <div class="grain"></div>
 
@@ -773,22 +773,19 @@ addEventListener('keydown', e=>{
   if (e.key==='ArrowRight') media.currentTime = Math.min(media.duration||0, media.currentTime+5);
 });
 
-/* enter overlay — guarantees a user gesture before audio */
+/* enter overlay — unmutes video on first user gesture */
 const enterEl = document.getElementById('enter');
 function dismissEnter(){
   enterEl.classList.add('hidden');
   document.body.classList.add('entered');
   media.muted = false;
+  media.volume = 1;
   media.play().catch(()=>{});
 }
 enterEl.addEventListener('click', dismissEnter);
 addEventListener('keydown', e => {
   if (!enterEl.classList.contains('hidden')) { e.preventDefault(); dismissEnter(); }
 }, { once: true });
-
-/* try silent autoplay in background (video only); overlay handles audio */
-media.muted = true;
-media.play().catch(()=>{});
 
 /* konami */
 const konami=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];

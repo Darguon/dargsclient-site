@@ -56,14 +56,8 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:none}
   font-size:clamp(20px,3vw,42px);
   letter-spacing:-.025em;
   line-height:1;
-  transition:opacity .22s ease, filter .22s ease, transform .22s ease;
 }
-#lyric.out #lyric-text{
-  opacity:0!important;
-  filter:blur(10px)!important;
-  transform:translateY(-12px)!important;
-}
-.lc{ display:inline }
+.lc{ display:inline; transition:opacity .08s, filter .08s }
 .lc.pre{ opacity:0 }
 .lc.scr{
   color:var(--accent);
@@ -871,10 +865,45 @@ function scrambleIn(text){
   lyricRAF = requestAnimationFrame(tick);
 }
 
+function exitLyric(cb){
+  const spans = [...lyricText.querySelectorAll('.lc[data-c]')];
+  if(!spans.length){ cb(); return; }
+  const len = spans.length;
+  const stagger = Math.min(28, 320/len);
+  const dur = 160;
+  const t0 = performance.now();
+  function tick(now){
+    const el = now - t0;
+    let done = true;
+    spans.forEach((sp,i)=>{
+      const ri = len-1-i; // right to left
+      const s = ri*stagger, e = s+dur;
+      if(el < s){
+        done=false;
+      } else if(el >= e){
+        sp.style.opacity='0';
+        sp.style.transform='translateY(6px)';
+        sp.style.filter='blur(4px)';
+      } else {
+        const p=(el-s)/dur;
+        sp.className='lc scr';
+        sp.textContent=GLYPHS[Math.floor(Math.random()*GLYPHS.length)];
+        sp.style.opacity=String(1-p*0.85);
+        sp.style.filter=`blur(${p*5}px)`;
+        done=false;
+      }
+    });
+    if(!done) lyricRAF=requestAnimationFrame(tick);
+    else{ lyricRAF=null; cb(); }
+  }
+  lyricRAF=requestAnimationFrame(tick);
+}
+
 function setLyric(text){
-  if(lyricRAF){ cancelAnimationFrame(lyricRAF); lyricRAF = null; }
-  lyricContainer.classList.add('out');
-  setTimeout(()=>scrambleIn(text), text ? 230 : 0);
+  if(lyricRAF){ cancelAnimationFrame(lyricRAF); lyricRAF=null; }
+  const spans = lyricText.querySelectorAll('.lc[data-c]');
+  if(spans.length) exitLyric(()=>scrambleIn(text));
+  else scrambleIn(text);
 }
 
 const lyrics = [

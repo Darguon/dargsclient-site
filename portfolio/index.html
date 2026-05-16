@@ -120,6 +120,22 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:none}
   60% {opacity:.7; transform:translate(var(--dx),var(--dy)) scale(.8)}
   100%{opacity:0;  transform:translate(var(--bx),var(--by)) scale(.2)}
 }
+/* ── lyric flash + bass flash ───────────────────────────────── */
+#lyric-flash{
+  position:fixed;inset:0;z-index:4999;pointer-events:none;
+  background:var(--accent);opacity:0;
+}
+@keyframes lFlash{
+  0%  {opacity:.13}
+  30% {opacity:.07}
+  100%{opacity:0}
+}
+#bass-flash{
+  position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 105%, rgba(255,91,58,.35) 0%, transparent 65%);
+  opacity:0;
+  transition:opacity .06s ease;
+}
 /* ── 3d tilt ─────────────────────────────────────────────────── */
 .tilt{
   transform-style:preserve-3d;
@@ -526,6 +542,8 @@ body.entered .np   {opacity:1;transform:none;transition-delay:.45s}
   <video id="media" src="/media/bg.mp4" autoplay loop playsinline muted></video>
 </div>
 <div class="grain"></div>
+<div id="bass-flash"></div>
+<div id="lyric-flash"></div>
 <div id="lyric"><div id="lyric-text"></div></div>
 
 <div class="page">
@@ -789,22 +807,53 @@ function initAnalyser(){
   }catch(e){}
 }
 
-/* ── vu bars + audio-reactive title (no Web Audio routing) ──── */
+/* ── vu bars + bass flash + audio-reactive title ─────────────── */
 const titleEl = document.querySelector('.title');
+const bassFlashEl = document.getElementById('bass-flash');
+let prevBass = 0;
+let bassHold = 0;
+
 function vuFrame(t){
   const playing = !media.paused && !media.muted;
-  // vu bars
-  for (let i=0;i<vuBars.length;i++){
-    const v = playing
-      ? Math.abs(Math.sin(t/400+i*.42)*Math.cos(t/300+i*.28))*.85+Math.random()*.15
-      : (Math.sin(t/900+i*.35)+1)*0.05+Math.random()*.02;
-    vuBars[i].style.height=(playing?8+v*92:4+v*20)+'%';
-    vuBars[i].classList.toggle('hi', v>0.5);
-    vuBars[i].classList.toggle('peak', v>0.85);
+  let bass = 0;
+
+  if(analyser && dataArr && playing){
+    analyser.getByteFrequencyData(dataArr);
+    // low bins = bass frequencies
+    bass = (dataArr[0]*1.2 + dataArr[1] + dataArr[2]*.8) / (3 * 255);
+    bass = Math.min(1, bass);
+
+    // vu bars from real data
+    for(let i=0;i<vuBars.length;i++){
+      const bin = Math.floor(i * dataArr.length / vuBars.length);
+      const v = dataArr[bin] / 255;
+      vuBars[i].style.height=(8+v*92)+'%';
+      vuBars[i].classList.toggle('hi', v>0.5);
+      vuBars[i].classList.toggle('peak', v>0.85);
+    }
+  } else {
+    // fallback simulated bars
+    for(let i=0;i<vuBars.length;i++){
+      const v = playing
+        ? Math.abs(Math.sin(t/400+i*.42)*Math.cos(t/300+i*.28))*.85+Math.random()*.15
+        : (Math.sin(t/900+i*.35)+1)*0.05+Math.random()*.02;
+      vuBars[i].style.height=(playing?8+v*92:4+v*20)+'%';
+      vuBars[i].classList.toggle('hi', v>0.5);
+      vuBars[i].classList.toggle('peak', v>0.85);
+    }
   }
-  // title pulse when playing
-  if (playing){
-    const pulse = 1 + Math.sin(t/260)*0.008 + Math.sin(t/130)*0.004;
+
+  // bass flash — trigger on beat onset
+  if(playing && bass > 0.52 && prevBass <= 0.52 && t - bassHold > 120){
+    bassHold = t;
+    bassFlashEl.style.opacity = (bass * 0.75).toFixed(2);
+    setTimeout(()=>{ bassFlashEl.style.opacity='0'; }, 110);
+  }
+  prevBass = bass;
+
+  // title pulse
+  if(playing){
+    const pulse = 1 + (bass * 0.012) + Math.sin(t/260)*0.005;
     titleEl.style.transform = `scale(${pulse.toFixed(5)})`;
   } else {
     titleEl.style.transform = '';
@@ -854,6 +903,7 @@ function dismissEnter(){
   media.muted = false;
   media.volume = 1;
   media.play().catch(()=>{});
+  initAnalyser();
 }
 enterEl.addEventListener('click', dismissEnter);
 addEventListener('keydown', e => {
@@ -867,11 +917,19 @@ const GLYPHS = '!@#$%^&*<>{}[]|\\/—+=?~`★◆▲■';
 let lyricRAF = null;
 let curLyric = -1;
 
+const lyricFlashEl = document.getElementById('lyric-flash');
+function triggerLyricFlash(){
+  lyricFlashEl.style.animation='none';
+  void lyricFlashEl.offsetWidth;
+  lyricFlashEl.style.animation='lFlash .45s ease forwards';
+}
+
 function scrambleIn(text){
   if(lyricRAF){ cancelAnimationFrame(lyricRAF); lyricRAF = null; }
   lyricContainer.classList.remove('out');
 
   if(!text){ lyricText.innerHTML=''; return; }
+  triggerLyricFlash();
 
   const chars = [...text];
   const len = chars.length;

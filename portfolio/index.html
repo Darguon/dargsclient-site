@@ -793,17 +793,38 @@ seek.addEventListener('input', ()=>{
 });
 
 /* ── audio analyser ─────────────────────────────────────────── */
-let audioCtx, analyser, dataArr, source;
+let audioCtx, analyser, dataArr, source, bassBoost, lpFilter;
 function initAnalyser(){
-  if (audioCtx) return;
+  if(audioCtx) return;
   try{
     audioCtx = new (AudioContext||webkitAudioContext)();
-    source = audioCtx.createMediaElementSource(media);
+    source   = audioCtx.createMediaElementSource(media);
+
+    /* bass boost — low-shelf +7dB at 100Hz */
+    bassBoost = audioCtx.createBiquadFilter();
+    bassBoost.type = 'lowshelf';
+    bassBoost.frequency.value = 100;
+    bassBoost.gain.value = 7;
+
+    /* low-pass — starts muffled at 220Hz, ramps open over 2.4s */
+    lpFilter = audioCtx.createBiquadFilter();
+    lpFilter.type = 'lowpass';
+    lpFilter.frequency.value = 220;
+    lpFilter.Q.value = 0.9;
+    const now = audioCtx.currentTime;
+    lpFilter.frequency.setValueAtTime(220, now);
+    lpFilter.frequency.exponentialRampToValueAtTime(20000, now + 2.4);
+
+    /* analyser */
     analyser = audioCtx.createAnalyser();
     analyser.fftSize = 64;
-    source.connect(analyser);
+    dataArr  = new Uint8Array(analyser.frequencyBinCount);
+
+    /* chain: source → lpFilter → bassBoost → analyser → out */
+    source.connect(lpFilter);
+    lpFilter.connect(bassBoost);
+    bassBoost.connect(analyser);
     analyser.connect(audioCtx.destination);
-    dataArr = new Uint8Array(analyser.frequencyBinCount);
   }catch(e){}
 }
 

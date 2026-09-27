@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" class="is-loading">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project — Darg</title>
+<meta name="description" content="A project by Darg, reverse engineer.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Project — Darg">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'><rect width='9' height='9' fill='%230c0c0c'/><path d='M2 1h4v1H2zM2 2h1v5H2zM6 2h1v5H6zM2 7h4v1H2z' fill='%23b48cff'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<noscript><style>.preloader,.pt{display:none}html.is-loading{overflow:auto}html.is-loading .header{opacity:1;transform:none}</style></noscript>
+</head>
+<body data-page="project">
+
+<div class="preloader">
+  <div class="pl-cols" aria-hidden="true"><span class="pl-col"></span><span class="pl-col"></span><span class="pl-col"></span><span class="pl-col"></span><span class="pl-col"></span></div>
+  <div class="pl-content"><span class="pl-label">Loading</span><span class="pl-num" aria-hidden="true">0</span></div>
+</div>
+<div class="pt" aria-hidden="true"><span class="pt-col"></span><span class="pt-col"></span><span class="pt-col"></span><span class="pt-col"></span><span class="pt-col"></span><span class="pt-label"></span></div>
+
+<div class="stage" aria-hidden="true">
+  <div class="stage-inner"><video id="bgVideo" src="media/bg.mp4" autoplay loop muted playsinline preload="auto"></video></div>
+  <div class="stage-shade"></div>
+</div>
+
+<header class="header" data-theme="light">
+  <a class="logo" href="index.html" aria-label="Darg — home"><svg viewBox="0 0 5 7" aria-hidden="true"><path d="M0 0h4v1H0zM0 1h1v5H0zM4 1h1v5H4zM0 6h4v1H0z"/></svg><span>darg</span></a>
+  <nav class="nav" aria-label="Main">
+    <span class="nav-ind" aria-hidden="true"></span>
+    <a href="index.html" data-nav="index">Index</a>
+    <a href="work.html" data-nav="work">Work</a>
+    <a href="about.html" data-nav="about">About</a>
+    <a href="contact.html" data-nav="contact">Contact</a>
+  </nav>
+  <div class="header-right">
+    <button class="sound" type="button" data-sound aria-pressed="false"><span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="sound-label">Sound off</span></button>
+    <a class="cta" href="contact.html">Let's talk</a>
+  </div>
+</header>
+<div class="toast" role="status" aria-live="polite"></div>
+
+<main class="view" data-view="project">
+
+  <section class="page-hero" data-theme="light">
+    <div class="container">
+      <a class="back" href="work.html"><span aria-hidden="true">←</span> All work</a>
+      <p class="kicker" data-proj="index"></p>
+      <h1 class="page-title proj-title" data-split data-intro data-proj="name">Project</h1>
+      <dl class="proj-meta">
+        <div><dt>Category</dt><dd data-proj="category"></dd></div>
+        <div><dt>Role</dt><dd data-proj="role"></dd></div>
+        <div><dt>Status</dt><dd data-proj="status"></dd></div>
+        <div><dt>Stack</dt><dd data-proj="stackline"></dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="proj-cover" data-theme="dark"><div class="proj-cover-inner" data-proj="cover"></div></section>
+
+  <section class="section" data-theme="light">
+    <div class="container">
+      <div class="proj-row"><p class="kicker">(Overview)</p><p class="proj-summary" data-proj="summary" data-reveal></p></div>
+      <div class="proj-row"><p class="kicker">(What it does)</p><ol class="proj-points" data-proj="points" data-reveal-group></ol></div>
+      <div class="proj-row"><p class="kicker">(Built with)</p><ul class="proj-stack" data-proj="stack" data-reveal-group></ul></div>
+    </div>
+  </section>
+
+  <section class="next" data-theme="light">
+    <a class="next-link" href="work.html" data-proj-next>
+      <div class="next-row container"><span data-next-l>Next</span><span data-next-r>Project</span></div>
+      <h2 class="next-title" data-proj="next-name"></h2>
+      <p class="next-sub"><span>View project</span></p>
+    </a>
+  </section>
+
+  <footer class="footer" data-theme="dark" data-footer></footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.11/dist/lenis.min.js"></script>
+<script src="assets/js/projects.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

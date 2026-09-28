@@ -25,8 +25,10 @@
   }
   const scroller = {
     top(immediate) {
-      if (lenis) lenis.scrollTo(0, { immediate, duration: 1.6 });
-      else window.scrollTo({ top: 0, behavior: immediate ? 'auto' : 'smooth' });
+      // force: Lenis ignores scrollTo while stopped, which it is during page transitions
+      if (immediate) window.scrollTo(0, 0);
+      if (lenis) lenis.scrollTo(0, { immediate, duration: 1.6, force: true });
+      else if (!immediate) window.scrollTo({ top: 0, behavior: 'smooth' });
     },
     stop() { lenis && lenis.stop(); },
     start() { lenis && lenis.start(); }
@@ -49,7 +51,14 @@
   }
   soundBtn.addEventListener('click', () => setSound(video.muted));
   video.muted = true;
-  video.play().catch(() => {});
+  // some mobile browsers reject the first muted autoplay; retry once media is ready or the user interacts
+  const kick = () => { if (video.paused) video.play().catch(() => {}); };
+  kick();
+  video.addEventListener('canplay', kick);
+  ['pointerdown', 'touchstart', 'scroll', 'keydown'].forEach(ev => addEventListener(ev, kick, { passive: true }));
+  // the site has no pause control, so any pause is the browser's (background tab, power saving) — resume when visible
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) kick(); });
+  video.addEventListener('pause', () => { if (!document.hidden) setTimeout(kick, 400); });
 
   /* ── toast ─────────────────────────────────────────────────────── */
   const toastEl = $('.toast');
@@ -128,11 +137,12 @@
   }
 
   function headerTheme(view) {
-    const secs = $$('[data-theme]', view);
-    if (secs[0]) header.dataset.theme = secs[0].dataset.theme;
+    const secs = $$('[data-theme], [data-header]', view);
+    const themeOf = sec => sec.dataset.header || sec.dataset.theme;
+    if (secs[0]) header.dataset.theme = themeOf(secs[0]);
     secs.forEach(sec => ScrollTrigger.create({
       trigger: sec, start: 'top 36px', end: 'bottom 36px',
-      onToggle: s => { if (s.isActive) header.dataset.theme = sec.dataset.theme; }
+      onToggle: s => { if (s.isActive) header.dataset.theme = themeOf(sec); }
     }));
   }
 
@@ -185,17 +195,14 @@
 
   function tiles(view) {
     $$('[data-tiles]', view).forEach(band => {
-      const small = innerWidth < 700;
-      const cols = small ? 6 : 12, rows = small ? 4 : 5;
-      band.style.setProperty('--cols', cols);
-      band.style.setProperty('--rows', rows);
-      band.innerHTML = `<div class="tiles-grid">${'<i></i>'.repeat(cols * rows)}</div>`;
-      const cells = $$('i', band);
-      if (reduce) { gsap.set(cells, { scaleY: 1 }); return; }
-      const delays = cells.map((_, i) => (rows - 1 - Math.floor(i / cols)) * 0.2 + Math.random() * 0.3);
-      gsap.to(cells, {
+      const cols = innerWidth < 700 ? 5 : 10;
+      band.innerHTML = `<div class="tiles-grid">${'<i></i>'.repeat(cols)}</div>`;
+      const bars = $$('i', band);
+      if (reduce) { gsap.set(bars, { scaleY: 1 }); return; }
+      const delays = bars.map(() => Math.random() * 0.6);
+      gsap.to(bars, {
         scaleY: 1, ease: 'none', stagger: i => delays[i],
-        scrollTrigger: { trigger: band, start: 'top bottom', end: 'bottom 30%', scrub: true }
+        scrollTrigger: { trigger: band, start: 'top bottom', end: 'top 15%', scrub: true }
       });
     });
   }
@@ -379,7 +386,8 @@
     const titles = slides.map(s => $('.hero-title', s));
     const metas = slides.map(s => $('.hero-meta', s));
     const tint = $('.hero-tint', hero);
-    const splits = titles.map(t => SplitText.create(t, { type: 'chars', mask: 'chars' }));
+    // words wrap the chars so titles can only break between words, never mid-word
+    const splits = titles.map(t => SplitText.create(t, { type: 'words,chars', mask: 'chars' }));
     const DUR = 6;
     let cur = 0, prog = null, inView = true;
 
@@ -480,6 +488,8 @@
       const tick = () => {
         cx += (tx - cx) * 0.2; cy += (ty - cy) * 0.2;
         dc.style.transform = `translate3d(${cx}px,${cy}px,0)`;
+        // scrolling moves the hero out from under a still pointer without firing pointerleave
+        if (dc.classList.contains('is-on') && ty > hero.getBoundingClientRect().bottom) dc.classList.remove('is-on');
       };
       hero.addEventListener('pointerenter', e => { cx = tx = e.clientX; cy = ty = e.clientY; dc.classList.add('is-on'); });
       hero.addEventListener('pointerleave', () => dc.classList.remove('is-on'));
@@ -537,10 +547,15 @@
 
       const wp = $('.wp', view), track = $('.wp-track', view);
       if (fine && !reduce) {
-        gsap.set(wp, { xPercent: -50, yPercent: -50, scale: 0.85 });
+        gsap.set(wp, { yPercent: -100, scale: 0.85, transformOrigin: '0% 100%' });
         let tx = innerWidth / 2, ty = innerHeight / 2, cx = tx, cy = ty, shown = false;
         const setX = gsap.quickSetter(wp, 'x', 'px'), setY = gsap.quickSetter(wp, 'y', 'px');
-        const tick = () => { cx += (tx - cx) * 0.14; cy += (ty - cy) * 0.14; setX(cx); setY(cy); };
+        // sit above-right of the cursor so the hovered row stays readable; clamped to the viewport
+        const tick = () => {
+          const x = Math.min(tx + 28, innerWidth - wp.offsetWidth - 16);
+          const y = Math.max(ty - 28, wp.offsetHeight + 16);
+          cx += (x - cx) * 0.14; cy += (y - cy) * 0.14; setX(cx); setY(cy);
+        };
         gsap.ticker.add(tick);
         onCleanup(() => gsap.ticker.remove(tick));
         list.addEventListener('pointermove', e => { tx = e.clientX; ty = e.clientY; });
@@ -622,7 +637,8 @@
       if (!sec || reduce || innerWidth <= 760) return;
       gsap.to(track, {
         x: () => -(track.scrollWidth - innerWidth), ease: 'none',
-        scrollTrigger: { trigger: sec, start: 'top top', end: () => '+=' + (track.scrollWidth - innerWidth), pin: true, scrub: 1, invalidateOnRefresh: true, anticipatePin: 1 }
+        // refreshPriority: measured before the triggers below it, which were created earlier but must include its pin spacing
+        scrollTrigger: { trigger: sec, start: 'top top', end: () => '+=' + (track.scrollWidth - innerWidth), pin: true, scrub: 1, invalidateOnRefresh: true, anticipatePin: 1, refreshPriority: 1 }
       });
     }
   };
@@ -681,8 +697,9 @@
     if (push) history.pushState({}, '', href);
     scroller.top(true);
     initPage();
-    await revealScreen();
-    playIntro();
+    const reveal = revealScreen();
+    gsap.delayedCall(reduce ? 0 : 0.45, playIntro);
+    await reveal;
     busy = false;
   }
 

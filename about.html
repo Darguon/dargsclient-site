@@ -3,114 +3,116 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>About — Darg</title>
-<meta name="description" content="Darg takes software apart until it makes sense — binaries, drivers, whatever's in the way.">
+<title>Director's notes &mdash; Darg&amp;co.</title>
+<meta name="description" content="Darg takes things apart until they make sense.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="About — Darg">
+<meta property="og:title" content="Director's notes &mdash; Darg&amp;co.">
+<meta property="og:description" content="Darg takes things apart until they make sense.">
 <meta name="twitter:card" content="summary">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'><rect width='9' height='9' fill='%230c0c0c'/><path d='M2 1h4v1H2zM2 2h1v5H2zM6 2h1v5H6zM2 7h4v1H2z' fill='%23b48cff'/></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23070706'/><text x='16' y='24' text-anchor='middle' font-size='22' font-weight='bold' font-family='serif' fill='%23f4efe6'>D</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css">
-<noscript><style>.preloader,.pt{display:none}html.is-loading{overflow:auto}html.is-loading .header{opacity:1;transform:none}</style></noscript>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css?v=reel-4">
+<noscript><style>.preloader,.pt{display:none}html.is-loading{overflow:auto}html.is-loading .topbar,html.is-loading .transport{opacity:1}</style></noscript>
 </head>
 <body data-page="about">
 
 <div class="preloader">
-  <div class="pl-cols" aria-hidden="true"><span class="pl-col"></span><span class="pl-col"></span><span class="pl-col"></span><span class="pl-col"></span><span class="pl-col"></span></div>
-  <div class="pl-content"><span class="pl-label">Loading</span><span class="pl-num" aria-hidden="true">0</span></div>
+  <div class="leader" aria-hidden="true">
+    <svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="92"/><circle cx="100" cy="100" r="78"/><path d="M100 0v200M0 100h200"/></svg>
+    <div class="leader-sweep"></div>
+    <span class="leader-num">8</span>
+  </div>
+  <div class="pl-intro">
+    <div class="pl-word">Darg<span class="amp">&amp;</span><em>co.</em></div>
+    <div class="pl-cue">Click anywhere for sound</div>
+  </div>
 </div>
-<div class="pt" aria-hidden="true"><span class="pt-col"></span><span class="pt-col"></span><span class="pt-col"></span><span class="pt-col"></span><span class="pt-col"></span><span class="pt-label"></span></div>
+<div class="pt" aria-hidden="true"><div class="pt-top"></div><div class="pt-bot"></div><div class="pt-slate"><span class="pt-scene"></span><span class="pt-take"></span><span class="pt-name"></span></div></div>
 
-<div class="stage" aria-hidden="true">
-  <div class="stage-inner"><video id="bgVideo" src="media/bg.mp4" autoplay loop muted playsinline preload="auto"></video></div>
-  <div class="stage-shade"></div>
-</div>
+<div class="stage" aria-hidden="true"><div class="stage-inner"><video id="bgVideo" src="media/bg.mp4" autoplay loop muted playsinline preload="auto"></video></div><div class="grade"></div></div>
+<div class="vignette" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
 
-<header class="header" data-theme="light">
-  <a class="logo" href="index.html" aria-label="Darg — home"><svg viewBox="0 0 5 7" aria-hidden="true"><path d="M0 0h4v1H0zM0 1h1v5H0zM4 1h1v5H4zM0 6h4v1H0z"/></svg><span>darg</span></a>
+<header class="topbar">
+  <div class="tb-left"><a class="brand" href="index.html">DARG &copy;</a><span class="slug" data-slug></span></div>
   <nav class="nav" aria-label="Main">
-    <span class="nav-ind" aria-hidden="true"></span>
     <a href="index.html" data-nav="index">Index</a>
-    <a href="work.html" data-nav="work">Work</a>
+    <a href="work.html" data-nav="work">Works</a>
     <a href="about.html" data-nav="about">About</a>
     <a href="contact.html" data-nav="contact">Contact</a>
   </nav>
-  <div class="header-right">
-    <button class="sound" type="button" data-sound aria-pressed="false"><span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="sound-label">Sound off</span></button>
-    <a class="cta" href="contact.html">Let's talk</a>
-  </div>
+  <span class="rec"><b></b>REC <span class="tc" data-tc>00:00:00:00</span></span>
 </header>
+
+<section class="transport" aria-label="Soundtrack">
+  <button class="play" type="button" data-play aria-label="Play">&#9654;</button>
+  <div class="tk"><span class="tk-t">Hate Bein' Sober</span><span class="tk-a">Chief Keef, 50 Cent &amp; Wiz Khalifa &middot; now playing</span></div>
+  <div class="timeline"><div class="bar-prog"><div class="fill" data-fill></div><input type="range" min="0" max="1000" value="0" data-seek aria-label="Seek"></div><span class="dur" data-time>0:00 / 0:00</span></div>
+  <div class="vu" data-vu aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <button class="mute" type="button" data-sound aria-pressed="false">Unmute</button>
+  <div class="dossier">
+    <div class="di"><span class="di-lbl">Date</span><span class="di-val" data-date>&mdash; &mdash;</span></div>
+    <div class="di" data-copy="dargdargdargdarg"><span class="di-lbl">Discord</span><span class="di-val">dargdargdargdarg</span></div>
+    <div class="di" data-copy="dargdargdargdarg@proton.me"><span class="di-lbl">Email</span><span class="di-val">proton.me</span></div>
+  </div>
+</section>
+
+<div class="reticle" aria-hidden="true"><div class="rt-box"></div><div class="rt-dot"></div><div class="rt-lbl">FOCUS</div></div>
 <div class="toast" role="status" aria-live="polite"></div>
 
-<main class="view" data-view="about">
+<main class="view" data-view="about" data-slug="Reel 03 &mdash; Director's notes">
 
-  <section class="page-hero" data-theme="light">
+  <section class="page-card">
     <div class="container">
-      <p class="kicker">(About)</p>
-      <h1 class="page-title" data-split data-intro>About</h1>
+      <p class="kicker">Reel 03</p>
+      <h1 class="page-title" data-split data-intro>Director's <em>notes</em></h1>
     </div>
   </section>
 
-  <section class="section" data-theme="light" style="padding-top:0">
+  <section class="scene" style="padding-top:0">
     <div class="container about-grid">
-      <p class="kicker">(Who)</p>
+      <p class="kicker" data-reveal>Statement</p>
       <div>
-        <h2 class="statement-text" data-scrub-words>I take things apart until they make sense — binaries, drivers, whatever's in the way.</h2>
-        <p class="about-lede" data-reveal>Started with games. Still how I work. These days it's mostly build pipelines, licensing, and tools that catch what shouldn't be there.</p>
+        <h2 class="synopsis-text" data-scrub-words>I take things apart until they make sense &mdash; binaries, drivers, <em>whatever's in the way.</em></h2>
+        <p class="serif-body page-lede" data-reveal>Started with games. Still how I work. These days it's mostly build pipelines, licensing, and tools that catch what shouldn't be there.</p>
       </div>
     </div>
   </section>
 
-  <div class="tiles tiles--to-dark" data-tiles data-header="dark" aria-hidden="true"></div>
-
-  <section class="process" data-theme="dark">
-    <div class="container process-head"><h2 class="section-title">Process</h2><p class="kicker">(How it goes)</p></div>
-    <div class="process-track">
-      <article class="process-card"><span class="process-n">01</span><div><h3>Discover</h3><p>Open the binary before the docs. The disassembly is what's actually running.</p></div></article>
-      <article class="process-card"><span class="process-n">02</span><div><h3>Dissect</h3><p>Map what's really there. Most of the time goes here.</p></div></article>
-      <article class="process-card"><span class="process-n">03</span><div><h3>Rebuild</h3><p>Ship the boring fix, or the tool that catches it next time.</p></div></article>
-      <article class="process-card"><span class="process-n">04</span><div><h3>Ship</h3><p>Deploy it, watch it, fix what breaks. Fifty production deploys so far.</p></div></article>
+  <section class="acts" aria-label="Process">
+    <div class="container scene-head" style="margin:0"><h2 class="scene-title">In four <em>acts</em></h2><p class="kicker">The process</p></div>
+    <div class="acts-track">
+      <article class="act"><div class="sprockets"></div><div class="act-body"><span class="act-n">Act I</span><div><h3>Discover</h3><p>Open the binary before the docs. The disassembly is what's actually running.</p></div></div><div class="sprockets bottom"></div></article>
+      <article class="act"><div class="sprockets"></div><div class="act-body"><span class="act-n">Act II</span><div><h3>Dissect</h3><p>Map what's really there. Most of the time goes here.</p></div></div><div class="sprockets bottom"></div></article>
+      <article class="act"><div class="sprockets"></div><div class="act-body"><span class="act-n">Act III</span><div><h3>Rebuild</h3><p>Ship the boring fix, or the tool that catches it next time.</p></div></div><div class="sprockets bottom"></div></article>
+      <article class="act"><div class="sprockets"></div><div class="act-body"><span class="act-n">Epilogue</span><div><h3>Ship</h3><p>Deploy it, watch it, fix what breaks. Fifty production deploys so far.</p></div></div><div class="sprockets bottom"></div></article>
     </div>
   </section>
 
-  <section class="section" data-theme="dark">
+  <section class="scene">
     <div class="container">
-      <div class="section-head"><h2 class="section-title" data-split>Stack</h2><p class="kicker">(Pulled from the repos)</p></div>
-      <div class="stack-cols" data-reveal-group>
-        <div><h4>Languages</h4><ul><li>Java</li><li>Rust</li><li>C++</li><li>JavaScript</li><li>Python</li><li>Lua</li></ul></div>
-        <div><h4>Frameworks &amp; tools</h4><ul><li>Fabric</li><li>JavaFX</li><li>Axum</li><li>sqlx</li><li>Gradle</li><li>Maven</li></ul></div>
-        <div><h4>Infrastructure</h4><ul><li>Postgres</li><li>Redis</li><li>Railway</li><li>Discord API</li><li>Native DLLs</li></ul></div>
-      </div>
+      <div class="scene-head"><h2 class="scene-title" data-split>Now <em>showing</em></h2><p class="kicker">Active works</p></div>
+      <ul class="now-list" data-now data-reveal-group></ul>
     </div>
   </section>
 
-  <div class="tiles tiles--to-light" data-tiles data-header="light" aria-hidden="true"></div>
-
-  <section class="section" data-theme="light">
-    <div class="container">
-      <div class="section-head"><h2 class="section-title" data-split>Currently</h2><p class="kicker">(Active projects)</p></div>
-      <ul class="cur-list" data-current data-reveal-group></ul>
-    </div>
-  </section>
-
-  <section class="next" data-theme="light">
+  <section class="next">
     <a class="next-link" href="contact.html">
-      <div class="next-row container"><span data-next-l>Next</span><span data-next-r>Page</span></div>
-      <h2 class="next-title">Let's<br>talk</h2>
-      <p class="next-sub"><span>Get in touch</span></p>
+      <span class="next-label"><b>Next reel</b> Reel 04</span>
+      <h2 class="next-title">Say <em>hello</em></h2>
     </a>
   </section>
 
-  <footer class="footer" data-theme="dark" data-footer></footer>
+  <footer class="endcredits" data-footer></footer>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.11/dist/lenis.min.js"></script>
-<script src="assets/js/projects.js"></script>
-<script src="assets/js/main.js"></script>
+<script src="assets/js/projects.js?v=reel-4"></script>
+<script src="assets/js/main.js?v=reel-4"></script>
 </body>
 </html>

@@ -3,163 +3,153 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Darg — Reverse Engineer</title>
-<meta name="description" content="Darg. Reverse engineer — kernel drivers, game internals, build pipelines and licensing.">
+<title>Darg&amp;co. &mdash; Reverse Engineer</title>
+<meta name="description" content="A film by a reverse engineer. Kernel drivers, game internals, build pipelines and licensing.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://dargdargdarg.online/">
-<meta property="og:title" content="Darg — Reverse Engineer">
-<meta property="og:description" content="I take software apart, so I can put it back together — differently.">
+<meta property="og:title" content="Darg&amp;co. &mdash; Reverse Engineer">
+<meta property="og:description" content="A film by a reverse engineer. Kernel drivers, game internals, build pipelines and licensing.">
 <meta name="twitter:card" content="summary">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'><rect width='9' height='9' fill='%230c0c0c'/><path d='M2 1h4v1H2zM2 2h1v5H2zM6 2h1v5H6zM2 7h4v1H2z' fill='%23b48cff'/></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23070706'/><text x='16' y='24' text-anchor='middle' font-size='22' font-weight='bold' font-family='serif' fill='%23f4efe6'>D</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css">
-<noscript><style>.preloader,.pt{display:none}html.is-loading{overflow:auto}html.is-loading .header{opacity:1;transform:none}</style></noscript>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css?v=reel-4">
+<noscript><style>.preloader,.pt{display:none}html.is-loading{overflow:auto}html.is-loading .topbar,html.is-loading .transport{opacity:1}</style></noscript>
 </head>
 <body data-page="index">
 
 <div class="preloader">
-  <div class="pl-cols" aria-hidden="true"><span class="pl-col"></span><span class="pl-col"></span><span class="pl-col"></span><span class="pl-col"></span><span class="pl-col"></span></div>
-  <div class="pl-content"><span class="pl-label">Loading</span><span class="pl-num" aria-hidden="true">0</span></div>
+  <div class="leader" aria-hidden="true">
+    <svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="92"/><circle cx="100" cy="100" r="78"/><path d="M100 0v200M0 100h200"/></svg>
+    <div class="leader-sweep"></div>
+    <span class="leader-num">8</span>
+  </div>
+  <div class="pl-intro">
+    <div class="pl-word">Darg<span class="amp">&amp;</span><em>co.</em></div>
+    <div class="pl-cue">Click anywhere for sound</div>
+  </div>
 </div>
-<div class="pt" aria-hidden="true"><span class="pt-col"></span><span class="pt-col"></span><span class="pt-col"></span><span class="pt-col"></span><span class="pt-col"></span><span class="pt-label"></span></div>
+<div class="pt" aria-hidden="true"><div class="pt-top"></div><div class="pt-bot"></div><div class="pt-slate"><span class="pt-scene"></span><span class="pt-take"></span><span class="pt-name"></span></div></div>
 
-<div class="stage" aria-hidden="true">
-  <div class="stage-inner"><video id="bgVideo" src="media/bg.mp4" autoplay loop muted playsinline preload="auto"></video></div>
-  <div class="stage-shade"></div>
-</div>
+<div class="stage" aria-hidden="true"><div class="stage-inner"><video id="bgVideo" src="media/bg.mp4" autoplay loop muted playsinline preload="auto"></video></div><div class="grade"></div></div>
+<div class="vignette" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
 
-<header class="header" data-theme="dark">
-  <a class="logo" href="index.html" aria-label="Darg — home"><svg viewBox="0 0 5 7" aria-hidden="true"><path d="M0 0h4v1H0zM0 1h1v5H0zM4 1h1v5H4zM0 6h4v1H0z"/></svg><span>darg</span></a>
+<header class="topbar">
+  <div class="tb-left"><a class="brand" href="index.html">DARG &copy;</a><span class="slug" data-slug></span></div>
   <nav class="nav" aria-label="Main">
-    <span class="nav-ind" aria-hidden="true"></span>
     <a href="index.html" data-nav="index">Index</a>
-    <a href="work.html" data-nav="work">Work</a>
+    <a href="work.html" data-nav="work">Works</a>
     <a href="about.html" data-nav="about">About</a>
     <a href="contact.html" data-nav="contact">Contact</a>
   </nav>
-  <div class="header-right">
-    <button class="sound" type="button" data-sound aria-pressed="false"><span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="sound-label">Sound off</span></button>
-    <a class="cta" href="contact.html">Let's talk</a>
-  </div>
+  <span class="rec"><b></b>REC <span class="tc" data-tc>00:00:00:00</span></span>
 </header>
+
+<section class="transport" aria-label="Soundtrack">
+  <button class="play" type="button" data-play aria-label="Play">&#9654;</button>
+  <div class="tk"><span class="tk-t">Hate Bein' Sober</span><span class="tk-a">Chief Keef, 50 Cent &amp; Wiz Khalifa &middot; now playing</span></div>
+  <div class="timeline"><div class="bar-prog"><div class="fill" data-fill></div><input type="range" min="0" max="1000" value="0" data-seek aria-label="Seek"></div><span class="dur" data-time>0:00 / 0:00</span></div>
+  <div class="vu" data-vu aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <button class="mute" type="button" data-sound aria-pressed="false">Unmute</button>
+  <div class="dossier">
+    <div class="di"><span class="di-lbl">Date</span><span class="di-val" data-date>&mdash; &mdash;</span></div>
+    <div class="di" data-copy="dargdargdargdarg"><span class="di-lbl">Discord</span><span class="di-val">dargdargdargdarg</span></div>
+    <div class="di" data-copy="dargdargdargdarg@proton.me"><span class="di-lbl">Email</span><span class="di-val">proton.me</span></div>
+  </div>
+</section>
+
+<div class="reticle" aria-hidden="true"><div class="rt-box"></div><div class="rt-dot"></div><div class="rt-lbl">FOCUS</div></div>
 <div class="toast" role="status" aria-live="polite"></div>
 
-<main class="view" data-view="index">
+<main class="view" data-view="index" data-slug="Reel 01 &mdash; Opening">
 
-  <section class="hero" data-theme="dark" aria-label="Featured projects">
-    <div class="hero-tint" aria-hidden="true"></div>
-    <div class="hero-content">
-      <div class="hero-slides"></div>
-      <div class="hero-inner">
-        <div class="hero-tabs"></div>
-        <div class="hero-foot">
-          <span class="hero-hint">Drag <span>to explore</span></span>
-          <div class="hero-nav">
-            <button type="button" data-hero-prev aria-label="Previous project">←</button>
-            <span>Navigate</span>
-            <button type="button" data-hero-next aria-label="Next project">→</button>
-          </div>
-          <span>Featured work</span>
-        </div>
+  <section class="opening" aria-label="Title card">
+    <div class="opening-inner">
+      <div class="titlecard">
+        <p class="kicker">A film by / reverse engineer</p>
+        <h1 class="title">Darg<span class="amp">&amp;</span><em>co.</em></h1>
+        <p class="role">taking software apart so it can be put back together, differently. <em>quiet hands, loud findings.</em></p>
       </div>
+      <aside class="credits" aria-label="Featuring">
+        <div class="c-head"><span>Featuring</span><span>08 works</span></div>
+        <div data-credits></div>
+      </aside>
+      <div class="subs" aria-hidden="true"><span class="subs-text"></span></div>
     </div>
   </section>
-  <div class="dc" aria-hidden="true"><div class="dc-in">Drag</div></div>
 
-  <section class="section" data-theme="light">
-    <div class="container">
-      <p class="kicker" data-reveal>(Reverse engineer)</p>
-      <h2 class="statement-text" data-scrub-words>I take software apart, so I can put it back together — differently.</h2>
-      <div class="statement-side" data-reveal>
-        <p>Kernel drivers, game internals, build pipelines and licensing, plus the tooling in between. These days most of it goes into things that catch what shouldn't be there.</p>
-        <a class="btn-arrow" href="about.html"><span>About me</span><i aria-hidden="true">→</i></a>
+  <section class="scene">
+    <div class="container synopsis">
+      <p class="kicker" data-reveal>Scene 01 &mdash; Synopsis</p>
+      <div>
+        <h2 class="synopsis-text" data-scrub-words>I take software apart, so I can put it back together &mdash; <em>differently.</em></h2>
+        <p class="serif-body synopsis-side" data-reveal>Kernel drivers, game internals, build pipelines and licensing &mdash; and the tooling in between. These days most of it goes into things that catch what shouldn't be there.</p>
+        <a class="link-line" href="about.html">Director's notes &rarr;</a>
       </div>
     </div>
   </section>
 
-  <section class="section" data-theme="light" style="padding-top:0">
-    <div class="container">
-      <div class="section-head"><h2 class="section-title" data-split>Selected work</h2><span class="kicker">(04 of 08)</span></div>
-      <div class="feat-grid" data-feat-grid></div>
-      <div class="see-all-wrap">
-        <svg class="see-all-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c.6 6.4 5.6 11.4 12 12-6.4.6-11.4 5.6-12 12-.6-6.4-5.6-11.4-12-12C6.4 11.4 11.4 6.4 12 0z"/></svg>
-        <a class="see-all" href="work.html"><span class="see-all-text">See all work</span><sup data-total></sup></a>
+  <section class="strip-sec" aria-label="Selected works">
+    <div class="strip-head"><div class="scene-head" style="margin:0"><h2 class="scene-title" data-split>Selected <em>works</em></h2><p class="kicker">Scene 02 &mdash; 08 frames</p></div></div>
+    <div class="strip" data-strip></div>
+  </section>
+
+  <section class="scene">
+    <div class="container credit-roll">
+      <p class="kicker" style="justify-content:center" data-reveal>Scene 03 &mdash; Credits</p>
+      <div class="cr-stats" style="margin-top:56px">
+        <div><div class="cr-num" data-count="08"></div><p class="cr-lbl">Works shipped</p></div>
+        <div><div class="cr-num" data-count="06"></div><p class="cr-lbl">Languages</p></div>
+        <div><div class="cr-num" data-count="50"></div><p class="cr-lbl">Production deploys</p></div>
+        <div><div class="cr-num" data-count="01"></div><p class="cr-lbl">Kernel driver</p></div>
+      </div>
+      <div>
+        <div class="cr-row"><span class="cr-role">Languages</span><span class="cr-names">Java, Rust, C++, JavaScript, Python, Lua</span></div>
+        <div class="cr-row"><span class="cr-role">Frameworks</span><span class="cr-names">Fabric, JavaFX, Axum, sqlx</span></div>
+        <div class="cr-row"><span class="cr-role">Build</span><span class="cr-names">Gradle, Maven</span></div>
+        <div class="cr-row"><span class="cr-role">Infrastructure</span><span class="cr-names">Postgres, Redis, Railway, Discord API</span></div>
+        <div class="cr-row"><span class="cr-role">Special thanks</span><span class="cr-names">every obfuscator that made it interesting</span></div>
       </div>
     </div>
   </section>
 
-  <div class="tiles tiles--to-dark" data-tiles data-header="dark" aria-hidden="true"></div>
-
-  <section class="craft" data-theme="dark">
-    <div class="marquee" data-marquee aria-hidden="true">
-      <div class="marquee-inner">
-        <span>Reverse engineering</span><svg viewBox="0 0 24 24"><path d="M12 0c.6 6.4 5.6 11.4 12 12-6.4.6-11.4 5.6-12 12-.6-6.4-5.6-11.4-12-12C6.4 11.4 11.4 6.4 12 0z"/></svg>
-        <span>Tooling</span><svg viewBox="0 0 24 24"><path d="M12 0c.6 6.4 5.6 11.4 12 12-6.4.6-11.4 5.6-12 12-.6-6.4-5.6-11.4-12-12C6.4 11.4 11.4 6.4 12 0z"/></svg>
-        <span>Infrastructure</span><svg viewBox="0 0 24 24"><path d="M12 0c.6 6.4 5.6 11.4 12 12-6.4.6-11.4 5.6-12 12-.6-6.4-5.6-11.4-12-12C6.4 11.4 11.4 6.4 12 0z"/></svg>
-      </div>
-    </div>
-    <div class="container">
-      <div class="counters">
-        <div><div class="counter-num" data-count="08"></div><p class="counter-lbl">Projects shipped</p></div>
-        <div><div class="counter-num" data-count="06"></div><p class="counter-lbl">Languages across the repos</p></div>
-        <div><div class="counter-num" data-count="50"></div><p class="counter-lbl">Production deploys</p></div>
-        <div><div class="counter-num" data-count="01"></div><p class="counter-lbl">Kernel driver, from scratch</p></div>
-      </div>
-      <div class="tool-grid" data-reveal-group>
-        <div class="tool"><span class="tool-n">01</span><span>Java</span></div>
-        <div class="tool"><span class="tool-n">02</span><span>Rust</span></div>
-        <div class="tool"><span class="tool-n">03</span><span>C++</span></div>
-        <div class="tool"><span class="tool-n">04</span><span>JavaScript</span></div>
-        <div class="tool"><span class="tool-n">05</span><span>Postgres</span></div>
-        <div class="tool"><span class="tool-n">06</span><span>Redis</span></div>
-        <div class="tool"><span class="tool-n">07</span><span>Gradle</span></div>
-        <div class="tool"><span class="tool-n">08</span><span>Railway</span></div>
-      </div>
+  <section class="scene">
+    <div class="container shots">
+      <p class="shots-label kicker">Scene 04 &mdash; Shot list</p>
+      <ol class="shot-list">
+        <li><span>Reverse <em>engineering</em></span></li>
+        <li><span>Deobfuscation</span></li>
+        <li><span>Kernel <em>drivers</em></span></li>
+        <li><span>Native modules</span></li>
+        <li><span>Licensing &amp; <em>auth</em></span></li>
+        <li><span>Build pipelines</span></li>
+        <li><span>Rust servers</span></li>
+        <li><span>Java tooling</span></li>
+        <li><span>Fabric mods</span></li>
+        <li><span>Discord bots</span></li>
+        <li><span>Pattern scanning</span></li>
+        <li><span>Game internals</span></li>
+        <li><span>Shipping the <em>boring fix</em></span></li>
+      </ol>
     </div>
   </section>
 
-  <div class="tiles tiles--to-light" data-tiles data-header="light" aria-hidden="true"></div>
-
-  <section class="caps" data-theme="light">
-    <div class="container caps-wrap">
-      <p class="caps-label">Capabilities, tools<br>and habits</p>
-      <ul class="caps-list">
-        <li>Reverse engineering</li>
-        <li>Deobfuscation</li>
-        <li>Kernel drivers</li>
-        <li>Native modules</li>
-        <li>Licensing &amp; auth</li>
-        <li>Build pipelines</li>
-        <li>Rust servers</li>
-        <li>Java tooling</li>
-        <li>Fabric mods</li>
-        <li>Discord bots</li>
-        <li>Pattern scanning</li>
-        <li>Postgres &amp; Redis</li>
-        <li>Game internals</li>
-        <li>Shipping the boring fix</li>
-      </ul>
-    </div>
-  </section>
-
-  <section class="next" data-theme="light">
+  <section class="next">
     <a class="next-link" href="work.html">
-      <div class="next-row container"><span data-next-l>Next</span><span data-next-r>Page</span></div>
-      <h2 class="next-title">Selected<br>Work</h2>
-      <p class="next-sub"><span>Browse the archive</span></p>
+      <span class="next-label"><b>Next reel</b> Reel 02</span>
+      <h2 class="next-title">Selected <em>works</em></h2>
     </a>
   </section>
 
-  <footer class="footer" data-theme="dark" data-footer></footer>
+  <footer class="endcredits" data-footer></footer>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.11/dist/lenis.min.js"></script>
-<script src="assets/js/projects.js"></script>
-<script src="assets/js/main.js"></script>
+<script src="assets/js/projects.js?v=reel-4"></script>
+<script src="assets/js/main.js?v=reel-4"></script>
 </body>
 </html>

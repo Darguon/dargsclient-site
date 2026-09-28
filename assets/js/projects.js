@@ -148,6 +148,6 @@ return config;</pre></div>`;
   window.coverHTML = function (p) {
     const c = p.cover;
     const tags = ['tl', 'tr', 'bl', 'br'].filter(k => c[k]).map(k => `<span class="cv-tag cv-${k}">${c[k]}</span>`).join('');
-    return `<div class="cv cv-${c.type}" style="--bg:${c.bg};--fg:${c.fg}" aria-hidden="true">${ART[c.type]()}${tags}</div>`;
+    return `<div class="cv cv-${c.type}" style="--cbg:${c.bg};--cfg:${c.fg}" aria-hidden="true">${ART[c.type]()}${tags}</div>`;
   };
 })();

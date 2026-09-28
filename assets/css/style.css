@@ -118,6 +118,7 @@ html.is-loading .header{opacity:0;transform:translateY(-16px)}
 .sound.is-on .sound-bars i:nth-child(3){animation-delay:-.6s}
 .sound.is-on .sound-bars i:nth-child(4){animation-delay:-.15s}
 @keyframes eq{0%,100%{transform:scaleY(.25)}50%{transform:scaleY(1)}}
+.sound.is-waiting .sound-label{animation:plBlink 1.8s ease-in-out infinite}
 .cta{
   padding:9px 20px;border:1.5px solid currentColor;border-radius:999px;font-size:13px;font-weight:500;
   transition:background .3s,color .3s;
@@ -544,7 +545,7 @@ html.is-loading .header{opacity:0;transform:translateY(-16px)}
   .slop s::after{transform:scaleX(1)}
   .pulse path{stroke-dashoffset:0}
   .sound.is-on .sound-bars i{animation:none;transform:scaleY(.7)}
-  .preloader.is-ready .pl-label{animation:none}
+  .preloader.is-ready .pl-label,.sound.is-waiting .sound-label{animation:none}
 }
 
 /* ── responsive ──────────────────────────────────────────────────── */

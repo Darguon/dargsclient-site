@@ -42,14 +42,37 @@
   /* ── video + sound (persists across page loads) ────────────────── */
   const video = $('#bgVideo');
   const soundBtn = $('[data-sound]');
+  const soundLabel = $('.sound-label', soundBtn);
+  const soundPref = {
+    get() { try { return localStorage.getItem('darg-sound'); } catch { return null; } },
+    set(v) { try { localStorage.setItem('darg-sound', v); } catch { /* storage blocked */ } }
+  };
   function setSound(on) {
     video.muted = !on;
     if (video.paused) video.play().catch(() => {});
+    soundBtn.classList.remove('is-waiting');
     soundBtn.classList.toggle('is-on', on);
     soundBtn.setAttribute('aria-pressed', String(on));
-    $('.sound-label', soundBtn).textContent = on ? 'Sound on' : 'Sound off';
+    soundLabel.textContent = on ? 'Sound on' : 'Sound off';
+    soundPref.set(on ? '1' : '0');
   }
   soundBtn.addEventListener('click', () => setSound(video.muted));
+
+  // Browsers only allow sound after a click or key press. When the entry screen is skipped
+  // (a reload in the same session), turn sound back on at the visitor's first click — unless they muted it.
+  function armSoundUnlock() {
+    if (soundPref.get() === '0') return;
+    soundBtn.classList.add('is-waiting');
+    soundLabel.textContent = 'Click for sound';
+    const evs = ['click', 'keydown'];
+    const off = () => evs.forEach(ev => removeEventListener(ev, unlock, true));
+    const unlock = e => {
+      off();
+      if (e.target.closest && e.target.closest('[data-sound]')) return; // the button's own handler turns it on
+      setSound(true);
+    };
+    evs.forEach(ev => addEventListener(ev, unlock, true));
+  }
   video.muted = true;
   // some mobile browsers reject the first muted autoplay; retry once media is ready or the user interacts
   const kick = () => { if (video.paused) video.play().catch(() => {}); };
@@ -761,6 +784,7 @@
       pt.classList.add('is-active');
       $('.preloader').remove();
       document.documentElement.classList.remove('is-loading');
+      armSoundUnlock();
       await revealScreen();
       playIntro();
     } else {
